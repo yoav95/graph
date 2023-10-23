@@ -1,0 +1,9 @@
+.nodeview {
+  background-color: var(--main-node-color);
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+}

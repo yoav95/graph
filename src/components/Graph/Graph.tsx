@@ -20,7 +20,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .nodes(nodes)
       .force("center", forceCenter(width / 2, height / 2))
       .force("charge", forceManyBody())
-      .force("link", forceLink(links).distance(200));
+      .force("link", forceLink(links).distance(300));
     setSimulation(graphSimulation);
     setGraphData({
       nodes: [...graphSimulation.nodes()],
@@ -38,6 +38,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
 
   const renderGraph = () => {
     const svg = select("#graph");
+
     const link = svg
       .select("#lines")
       .selectAll("line")

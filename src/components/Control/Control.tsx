@@ -53,7 +53,9 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
           <select id="from">
             {Array.from({ length: numOfNodes }, (_, index) => index).map(
               (num) => (
-                <option value={num}>{num}</option>
+                <option key={Math.random().toString()} value={num}>
+                  {num}
+                </option>
               )
             )}
           </select>
@@ -61,7 +63,9 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
           <select id="to">
             {Array.from({ length: numOfNodes }, (_, index) => index).map(
               (num) => (
-                <option value={num}>{num}</option>
+                <option key={Math.random().toString()} value={num}>
+                  {num}
+                </option>
               )
             )}
           </select>

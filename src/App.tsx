@@ -8,6 +8,9 @@ const App = () => {
   const [nodes, setNodes] = useState(data.nodes);
   const [links, setLinks] = useState(data.links);
   const [selectedNode, setSelectedNode] = useState(null);
+  const saveGraph = () => {
+    console.log(links, nodes);
+  };
   const addNode = (node: Node) => {
     setNodes((prev) => {
       const newNodes = [...prev];
@@ -36,6 +39,9 @@ const App = () => {
           numOfNodes={nodes.length}
         />
         {selectedNode && <NodeView nodeData={selectedNode} />}
+        <div>
+          <button onClick={saveGraph}>Save Graph</button>
+        </div>
       </div>
     </div>
   );

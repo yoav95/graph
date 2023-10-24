@@ -8,14 +8,19 @@ import {
   forceManyBody,
   drag,
 } from "d3";
+import { shortenPathBetweenCircles, shortenSVGPath } from "../../utils";
 
 const width = 1000;
 const height = 500;
+const types = ["resolved", "suit", "licensing"];
 
 const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
   const [simulation, setSimulation] = useState<any>(null);
   const [graphData, setGraphData] = useState<any>(null);
   useEffect(() => {
+    // each time component props change (nodes,links) this code runs
+    // its generates a graphData object with nodes and links fields, that
+    // has more data about the location of the nodes and links
     const graphSimulation = forceSimulation()
       .nodes(nodes)
       .force("center", forceCenter(width / 2, height / 2))
@@ -29,6 +34,8 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
   }, [nodes, links]);
 
   useEffect(() => {
+    // runs each time graphData changes,
+    // in case of a change in values, renderGraph function runs and "draw" the graph
     if (graphData === null) {
       return;
     } else {
@@ -37,21 +44,34 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
   }, [graphData]);
 
   const renderGraph = () => {
+    // for rendering the graph to the screen on every change of graph data
     const svg = select("#graph");
-
+    svg
+      .append("svg:defs")
+      .append("svg:marker")
+      .attr("id", "end-arrow")
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 8) // Adjust the position of the arrowhead on the line
+      .attr("markerWidth", 8) // Adjust the size of the marker
+      .attr("markerHeight", 8)
+      .attr("orient", "auto")
+      .append("svg:path")
+      .attr("d", "M0,-5L10,0L0,5")
+      .attr("fill", "var(--main-line-color)");
     const link = svg
       .select("#lines")
-      .selectAll("line")
+      .selectAll("path")
       .data(graphData.links)
-      .join("line")
+      .join("path")
       .attr("stroke", "var(--main-line-color)")
-      .attr("stroke-width", "2px");
+      .attr("stroke-width", "2px")
+      .attr("marker-end", "url(#end-arrow)");
     const node = svg
       .select("#circles")
       .selectAll("circle")
       .data(graphData.nodes)
       .join("circle")
-      .attr("r", 38)
+      .attr("r", (node: Node) => node.radius)
       .attr("class", "circle")
       .attr("fill", "var(--main-node-color)")
       .call(
@@ -88,12 +108,25 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
   };
 
   const ticked = (node, link, title, index) => {
+    // this should be a constant function -> fix it so it wont be created on each rerender
     node.attr("cx", (node) => node.x).attr("cy", (node) => node.y);
-    link
-      .attr("x1", (link) => link.source.x)
-      .attr("y1", (link) => link.source.y)
-      .attr("x2", (link) => link.target.x)
-      .attr("y2", (link) => link.target.y);
+    link.attr("d", (d) => {
+      // const dAttribute = `M${d.source.x},${d.source.y}A0,0 0 0,1 ${d.target.x},${d.target.y}`;
+
+      const dAttribute = `M${d.source.x},${d.source.y} A0,0 0 0,1 ${d.target.x},${d.target.y}`;
+      const c1 = {
+        radius: d.source.radius,
+        x: d.source.x,
+        y: d.source.y,
+      };
+      const c2 = {
+        radius: d.target.radius,
+        x: d.target.x,
+        y: d.target.y,
+      };
+      const newD = shortenSVGPath(dAttribute, c1, c2, 200);
+      return newD;
+    });
     title
       .attr("x", (node) => node.x)
       .attr("y", (node) => node.y)
@@ -105,6 +138,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
   };
   // function to start dragging
   function dragstarted(event, d) {
+    // this should be a constant function -> fix it so it wont be created on each rerender
     if (!event.active) simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
     d.fy = d.y;
@@ -112,12 +146,14 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
 
   // function to drag
   function dragged(event, d) {
+    // this should be a constant function -> fix it so it wont be created on each rerender
     d.fx = event.x;
     d.fy = event.y;
   }
 
   // function to end dragging
   function dragended(event, d) {
+    // this should be a constant function -> fix it so it wont be created on each rerender
     if (!event.active) simulation.alphaTarget(0);
     if (d.fixed == true) {
       d.fx = d.x;

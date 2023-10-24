@@ -13,7 +13,7 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
   const handleNodeSubmit = (event) => {
     event.preventDefault();
     const fruit: string = event.target[0].value;
-    const node = { id: Math.random().toString(), title: fruit };
+    const node = { id: Math.random().toString(), title: fruit, radius: 38 };
     onAddNode(node);
   };
   const fruits = [];

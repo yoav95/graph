@@ -7,11 +7,12 @@ import {
   forceLink,
   forceManyBody,
   drag,
+  zoom as d3Zoom,
 } from "d3";
 import { shortenPathBetweenCircles, shortenSVGPath } from "../../utils";
 
-const width = 1000;
-const height = 500;
+const width = "100%";
+const height = `100%`;
 const types = ["resolved", "suit", "licensing"];
 
 const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
@@ -23,7 +24,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
     // has more data about the location of the nodes and links
     const graphSimulation = forceSimulation()
       .nodes(nodes)
-      .force("center", forceCenter(width / 2, height / 2))
+      .force("center", forceCenter(500, 200))
       .force("charge", forceManyBody())
       .force("link", forceLink(links).distance(300));
     setSimulation(graphSimulation);
@@ -58,6 +59,8 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .append("svg:path")
       .attr("d", "M0,-5L10,0L0,5")
       .attr("fill", "var(--main-line-color)");
+
+    let zoom = d3Zoom().on("zoom", handleZoom);
     const link = svg
       .select("#lines")
       .selectAll("path")
@@ -93,7 +96,9 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("text-anchor", "middle")
       .attr("font-size", "16px")
       .attr("class", "title");
-
+    const initZoom = () => {
+      select("#graph").call(zoom);
+    };
     const index = svg
       .select("#index")
       .selectAll("text")
@@ -105,6 +110,10 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("class", "title");
 
     simulation.on("tick", () => ticked(node, link, title, index));
+    initZoom();
+  };
+  const handleZoom = (e) => {
+    select("#graph").attr("transform", e.transform);
   };
 
   const ticked = (node, link, title, index) => {
@@ -175,7 +184,6 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       style={{
         height: height,
         width: width,
-        border: "2px solid var(--main-line-color)",
       }}
       onClick={handleGraphClick}
     >

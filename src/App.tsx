@@ -28,20 +28,15 @@ const App = () => {
   const showNode = (node) => {
     setSelectedNode(node);
   };
+  const showModal = () => {
+    alert("adding node");
+  };
   return (
     <div className={styles.app}>
       <Graph nodes={nodes} links={links} showNodeHandler={showNode} />
-
-      <div className={styles.box}>
-        <Control
-          onAddNode={addNode}
-          onAddLink={addLink}
-          numOfNodes={nodes.length}
-        />
-        {selectedNode && <NodeView nodeData={selectedNode} />}
-        <div>
-          <button onClick={saveGraph}>Save Graph</button>
-        </div>
+      <div className={styles.control}>
+        <button className={styles.btn}>add node</button>
+        <button className={styles.btn}>add link</button>
       </div>
     </div>
   );

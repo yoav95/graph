@@ -12,7 +12,7 @@ import {
 import { shortenPathBetweenCircles, shortenSVGPath } from "../../utils";
 
 const width = "100%";
-const height = `100%`;
+const height = "100%";
 const types = ["resolved", "suit", "licensing"];
 
 const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
@@ -184,6 +184,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       style={{
         height: height,
         width: width,
+        overflow: "visible",
       }}
       onClick={handleGraphClick}
     >

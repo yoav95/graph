@@ -37,6 +37,7 @@ const App = () => {
       <div className={styles.control}>
         <button className={styles.btn}>add node</button>
         <button className={styles.btn}>add link</button>
+        <button className={styles.btn}>save graph</button>
       </div>
     </div>
   );

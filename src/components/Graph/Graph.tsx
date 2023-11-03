@@ -60,8 +60,10 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("d", "M0,-5L10,0L0,5")
       .attr("fill", "var(--main-line-color)");
 
-    let zoom = d3Zoom().on("zoom", handleZoom);
-    const link = svg
+    const container = svg.select("#container");
+
+    let zoom = d3Zoom().scaleExtent([0.1, 4]).on("zoom", handleZoom);
+    const link = container
       .select("#lines")
       .selectAll("path")
       .data(graphData.links)
@@ -69,14 +71,14 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("stroke", "var(--main-line-color)")
       .attr("stroke-width", "2px")
       .attr("marker-end", "url(#end-arrow)");
-    const node = svg
+    const node = container
       .select("#circles")
       .selectAll("circle")
       .data(graphData.nodes)
       .join("circle")
       .attr("r", (node: Node) => node.radius)
       .attr("class", "circle")
-      .attr("fill", "var(--main-node-color)")
+      .attr("fill", (node) => node.color)
       .call(
         drag().on("start", dragstarted).on("drag", dragged).on("end", dragended)
       )
@@ -87,7 +89,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
         event.srcElement.classList.toggle("selected");
       });
 
-    const title = svg
+    const title = container
       .select("#text")
       .selectAll("text")
       .data(graphData.nodes)
@@ -96,10 +98,8 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("text-anchor", "middle")
       .attr("font-size", "16px")
       .attr("class", "title");
-    const initZoom = () => {
-      select("#graph").call(zoom);
-    };
-    const index = svg
+
+    const index = container
       .select("#index")
       .selectAll("text")
       .data(graphData.nodes)
@@ -110,10 +110,10 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
       .attr("class", "title");
 
     simulation.on("tick", () => ticked(node, link, title, index));
-    initZoom();
+    svg.call(zoom);
   };
   const handleZoom = (e) => {
-    select("#graph").attr("transform", e.transform);
+    select("#container").attr("transform", e.transform);
   };
 
   const ticked = (node, link, title, index) => {
@@ -185,13 +185,16 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
         height: height,
         width: width,
         overflow: "visible",
+        cursor: "pointer",
       }}
       onClick={handleGraphClick}
     >
-      <g id="lines"></g>
-      <g id="circles"></g>
-      <g id="text"></g>
-      <g id="index"></g>
+      <g id="container">
+        <g id="lines"></g>
+        <g id="circles"></g>
+        <g id="text"></g>
+        <g id="index"></g>
+      </g>
     </svg>
   );
 };

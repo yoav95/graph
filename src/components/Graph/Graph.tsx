@@ -25,7 +25,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
     const graphSimulation = forceSimulation()
       .nodes(nodes)
       .force("center", forceCenter(500, 200))
-      .force("charge", forceManyBody())
+      .force("charge", forceManyBody().strength(-200))
       .force("link", forceLink(links).distance(300));
     setSimulation(graphSimulation);
     setGraphData({
@@ -176,7 +176,7 @@ const Graph = ({ nodes, links, showNodeHandler }: GraphProps) => {
     const x = event.nativeEvent.offsetX;
     const y = event.nativeEvent.offsetY;
     const element = simulation.find(x, y, 15);
-    showNodeHandler(element);
+    showNodeHandler(element, { x: event.screenX, y: event.screenY });
   };
   return (
     <svg

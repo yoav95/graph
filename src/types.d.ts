@@ -1,5 +1,6 @@
 type Node = {
   title: string;
+  color: string;
   radius: number;
   id: string;
   vx?: number;

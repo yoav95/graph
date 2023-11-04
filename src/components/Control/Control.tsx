@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import getRandomFruitsName from "random-fruits-name";
+import { getRandomBrightColor } from "../../utils";
 import styles from "./Control.module.css";
 const NUM_OF_FRUITS = 10;
-const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
-  const [mode, setMode] = useState("node");
+const Control = ({ onAddNode, onAddLink, numOfNodes, mode }) => {
   const handleLinkSubmit = (event) => {
     event.preventDefault();
     const from = event.target.querySelector("#from").value;
@@ -13,7 +13,13 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
   const handleNodeSubmit = (event) => {
     event.preventDefault();
     const fruit: string = event.target[0].value;
-    const node = { id: Math.random().toString(), title: fruit, radius: 38 };
+    const randomColor = getRandomBrightColor();
+    const node = {
+      id: Math.random().toString(),
+      title: fruit,
+      radius: 38,
+      color: randomColor,
+    };
     onAddNode(node);
   };
   const fruits = [];
@@ -22,7 +28,12 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
   }
   const jsx =
     mode === "node" ? (
-      <div className={styles.control}>
+      <div
+        className={styles.control}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <form onSubmit={handleNodeSubmit}>
           <h2>{mode === "node" ? "Add Node" : "Add Link"}</h2>
           <label>fruit name</label>
@@ -34,19 +45,15 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
             ))}
           </select>
           <button type="submit">add</button>
-          <button
-            onClick={() =>
-              setMode((prev) => {
-                return mode === "node" ? "link" : "node";
-              })
-            }
-          >
-            {mode === "node" ? "add link" : "add node"}
-          </button>
         </form>
       </div>
     ) : (
-      <div className={styles.control}>
+      <div
+        className={styles.control}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <form onSubmit={handleLinkSubmit}>
           <h2>{mode === "node" ? "Add Node" : "Add Link"}</h2>
           <label>from</label>
@@ -70,15 +77,6 @@ const Control = ({ onAddNode, onAddLink, numOfNodes }) => {
             )}
           </select>
           <button type="submit">add</button>
-          <button
-            onClick={() =>
-              setMode((prev) => {
-                return mode === "node" ? "link" : "node";
-              })
-            }
-          >
-            {mode === "node" ? "add link" : "add node"}
-          </button>
         </form>
       </div>
     );

@@ -50,3 +50,12 @@ export function shortenSVGPath(d, c1, c2, desiredLength) {
 
   return newPath;
 }
+
+export function getRandomBrightColor() {
+  const randomColor = () => Math.floor(Math.random() * 200 + 55); // Generate random color values between 55 and 255 for brightness
+  const r = randomColor();
+  const g = randomColor();
+  const b = randomColor();
+  const bgColor = `rgb(${r},${g},${b})`;
+  return bgColor;
+}
